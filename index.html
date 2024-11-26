@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Bị Tấn Công</title>
+    <style>
+        /* Tổng thể giao diện */
+        body {
+            background-color: black;
+            color: #00FF00;
+            font-family: "Courier New", Courier, monospace;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* Tiêu đề */
+        h1 {
+            text-align: center;
+            font-size: 3em;
+            margin-top: 20px;
+            text-transform: uppercase;
+            color: #00FF00;
+            animation: glitch 1s infinite;
+        }
+
+        /* Hiệu ứng glitch cho tiêu đề */
+        @keyframes glitch {
+            0% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+            20% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+            40% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+            60% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+            80% { text-shadow: 1px 0 0 red, -1px 0 0 blue; }
+            100% { text-shadow: -1px 0 0 red, 1px 0 0 blue; }
+        }
+
+        /* Terminal: nơi hiển thị dòng lệnh */
+        .terminal {
+            position: absolute;
+            top: 100px;
+            left: 10%;
+            width: 80%;
+            height: 300px;
+            overflow-y: auto;
+            background-color: black;
+            padding: 10px;
+            border: 2px solid #00FF00;
+            font-size: 1.2em;
+            color: #00FF00;
+            white-space: nowrap;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        /* Biểu đồ chứng khoán */
+        .chart-container {
+            position: absolute;
+            top: 420px;
+            left: 10%;
+            width: 80%;
+            height: 300px;
+            background-color: #000;
+            border: 2px solid #00FF00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        /* Dòng nhị phân */
+        .binary-stream {
+            position: absolute;
+            top: 750px;
+            left: 10%;
+            font-size: 2em;
+            white-space: nowrap;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .binary {
+            animation: binaryAnim 0.2s infinite;
+        }
+
+        @keyframes binaryAnim {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(10px); }
+        }
+
+        /* Màn hình thông báo */
+        .screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 2em;
+            letter-spacing: 1px;
+            display: none;
+            color: red;
+            font-weight: bold;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border: 3px solid red;
+            border-radius: 10px;
+        }
+
+        /* Khung nhập lệnh (giống như hacker đang gõ lệnh) */
+        .command-line {
+            font-size: 1.5em;
+            color: #00FF00;
+            position: absolute;
+            bottom: 20px;
+            left: 10%;
+            width: 80%;
+            border: none;
+            outline: none;
+            background: transparent;
+            box-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
+        }
+
+        /* Các dòng lệnh đang chạy */
+        .command-line:focus {
+            border-bottom: 2px solid red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hệ Thống Bị Tấn Công</h1>
+    
+    <!-- Terminal hiển thị các dòng lệnh -->
+    <div class="terminal">
+        <p>Đang quét hệ thống...</p>
+        <p>Đang tải dữ liệu...</p>
+        <p>Giải mã thông tin...</p>
+        <p>Cảnh báo! Dữ liệu bị xâm nhập!</p>
+        <p>Đang kiểm tra mã độc...</p>
+        <p>Hệ thống bị chiếm quyền truy cập.</p>
+    </div>
+
+    <!-- Biểu đồ chứng khoán -->
+    <div class="chart-container">
+        <canvas id="chart"></canvas>
+    </div>
+
+    <!-- Dòng nhị phân -->
+    <div class="binary-stream">
+        <span class="binary">0101010101010101</span>
+        <span class="binary">1010101010101010</span>
+        <span class="binary">1111000011110000</span>
+        <span class="binary">0000111100001111</span>
+        <span class="binary">1100110011001100</span>
+    </div>
+
+    <!-- Màn hình thông báo khi chiếm quyền truy cập -->
+    <div class="screen">
+        <p>Máy tính của bạn đã bị chiếm quyền truy cập.</p>
+    </div>
+
+    <!-- Dòng nhập lệnh -->
+    <input class="command-line" type="text" placeholder="Nhập lệnh..." />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Hiển thị thông báo sau 5 giây
+        setTimeout(function() {
+            document.querySelector('.screen').style.display = 'block';
+        }, 5000);
+
+        // Khởi tạo biểu đồ chứng khoán
+        const ctx = document.getElementById('chart').getContext('2d');
+        const data = {
+            labels: Array.from({ length: 20 }, (_, i) => i + 1),
+            datasets: [{
+                label: 'Biểu đồ chứng khoán',
+                borderColor: 'rgba(255, 0, 0, 1)', 
+                backgroundColor: 'rgba(255, 0, 0, 0.2)', 
+                data: Array.from({ length: 20 }, () => Math.random() * 100),
+                fill: true,
+                tension: 0.3 
+            }]
+        };
+
+        const config = {
+            type: 'line',
+            data: data,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: 'green' 
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 0 
+                    }
+                }
+            }
+        };
+
+        const stockChart = new Chart(ctx, config);
+
+        function updateChart() {
+            const lastData = stockChart.data.datasets[0].data[stockChart.data.datasets[0].data.length - 1];
+            const newData = lastData + (Math.random() - 0.5) * 10;
+            stockChart.data.datasets[0].data.push(newData);
+
+            stockChart.data.labels.push(stockChart.data.labels.length + 1);
+
+            if (stockChart.data.datasets[0].data.length > 200) {
+                stockChart.data.datasets[0].data.shift();
+                stockChart.data.labels.shift();
+            }
+
+            stockChart.update();
+        }
+
+        setInterval(updateChart, 500); 
+
+        // Tạo các con số nhị phân chạy liên tục
+        function generateBinaryStream() {
+            const binaryStream = document.querySelector('.binary-stream');
+            setInterval(function() {
+                let randomBinary = Math.floor(Math.random() * 2);
+                let newBinary = document.createElement('span');
+                newBinary.classList.add('binary');
+                newBinary.textContent = randomBinary === 0 ? '0' : '1';
+                binaryStream.appendChild(newBinary);
+                setTimeout(function() {
+                    binaryStream.removeChild(newBinary);
+                }, 200);
+            }, 200);
+        }
+
+        generateBinaryStream();
+    </script>
+</body>
+</html>
